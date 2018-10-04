@@ -1,0 +1,272 @@
+
+find_best_split.so:     формат файла elf64-x86-64
+
+
+0000000000000760 <evaluate_antiloss>:
+ 760:	45 85 c0             	test   %r8d,%r8d
+ 763:	0f 8e 97 00 00 00    	jle    800 <evaluate_antiloss+0xa0>
+ 769:	41 8d 40 ff          	lea    -0x1(%r8),%eax
+ 76d:	66 0f ef c0          	pxor   %xmm0,%xmm0
+ 771:	4c 8d 14 85 04 00 00 	lea    0x4(,%rax,4),%r10
+ 778:	00 
+ 779:	31 c0                	xor    %eax,%eax
+ 77b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 780:	44 8b 0c 06          	mov    (%rsi,%rax,1),%r9d
+ 784:	66 0f ef db          	pxor   %xmm3,%xmm3
+ 788:	45 85 c9             	test   %r9d,%r9d
+ 78b:	74 1a                	je     7a7 <evaluate_antiloss+0x47>
+ 78d:	66 0f ef d2          	pxor   %xmm2,%xmm2
+ 791:	f2 0f 10 0c 47       	movsd  (%rdi,%rax,2),%xmm1
+ 796:	f2 41 0f 2a d1       	cvtsi2sd %r9d,%xmm2
+ 79b:	f2 0f 59 c9          	mulsd  %xmm1,%xmm1
+ 79f:	66 0f 28 d9          	movapd %xmm1,%xmm3
+ 7a3:	f2 0f 5e da          	divsd  %xmm2,%xmm3
+ 7a7:	44 8b 04 01          	mov    (%rcx,%rax,1),%r8d
+ 7ab:	45 39 c1             	cmp    %r8d,%r9d
+ 7ae:	74 38                	je     7e8 <evaluate_antiloss+0x88>
+ 7b0:	45 29 c8             	sub    %r9d,%r8d
+ 7b3:	66 0f ef d2          	pxor   %xmm2,%xmm2
+ 7b7:	f2 0f 10 0c 42       	movsd  (%rdx,%rax,2),%xmm1
+ 7bc:	f2 41 0f 2a d0       	cvtsi2sd %r8d,%xmm2
+ 7c1:	f2 0f 5c 0c 47       	subsd  (%rdi,%rax,2),%xmm1
+ 7c6:	48 83 c0 04          	add    $0x4,%rax
+ 7ca:	4c 39 d0             	cmp    %r10,%rax
+ 7cd:	f2 0f 59 c9          	mulsd  %xmm1,%xmm1
+ 7d1:	f2 0f 5e ca          	divsd  %xmm2,%xmm1
+ 7d5:	f2 0f 58 cb          	addsd  %xmm3,%xmm1
+ 7d9:	f2 0f 58 c1          	addsd  %xmm1,%xmm0
+ 7dd:	75 a1                	jne    780 <evaluate_antiloss+0x20>
+ 7df:	f3 c3                	repz retq 
+ 7e1:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ 7e8:	48 83 c0 04          	add    $0x4,%rax
+ 7ec:	f2 0f 58 c3          	addsd  %xmm3,%xmm0
+ 7f0:	49 39 c2             	cmp    %rax,%r10
+ 7f3:	75 8b                	jne    780 <evaluate_antiloss+0x20>
+ 7f5:	f3 c3                	repz retq 
+ 7f7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+ 7fe:	00 00 
+ 800:	66 0f ef c0          	pxor   %xmm0,%xmm0
+ 804:	c3                   	retq   
+ 805:	90                   	nop
+ 806:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 80d:	00 00 00 
+
+0000000000000810 <find_best_split>:
+ 810:	41 57                	push   %r15
+ 812:	41 56                	push   %r14
+ 814:	b8 01 00 00 00       	mov    $0x1,%eax
+ 819:	41 55                	push   %r13
+ 81b:	41 54                	push   %r12
+ 81d:	49 89 cd             	mov    %rcx,%r13
+ 820:	55                   	push   %rbp
+ 821:	53                   	push   %rbx
+ 822:	45 89 ce             	mov    %r9d,%r14d
+ 825:	48 81 ec 98 00 00 00 	sub    $0x98,%rsp
+ 82c:	8b 8c 24 e0 00 00 00 	mov    0xe0(%rsp),%ecx
+ 833:	48 89 7c 24 70       	mov    %rdi,0x70(%rsp)
+ 838:	bf 10 00 00 00       	mov    $0x10,%edi
+ 83d:	48 89 74 24 50       	mov    %rsi,0x50(%rsp)
+ 842:	48 89 54 24 58       	mov    %rdx,0x58(%rsp)
+ 847:	4c 89 44 24 18       	mov    %r8,0x18(%rsp)
+ 84c:	d3 e0                	shl    %cl,%eax
+ 84e:	4c 63 f8             	movslq %eax,%r15
+ 851:	4a 8d 1c fd 00 00 00 	lea    0x0(,%r15,8),%rbx
+ 858:	00 
+ 859:	41 8d 47 ff          	lea    -0x1(%r15),%eax
+ 85d:	44 89 7c 24 08       	mov    %r15d,0x8(%rsp)
+ 862:	4c 89 fd             	mov    %r15,%rbp
+ 865:	49 c1 e7 02          	shl    $0x2,%r15
+ 869:	89 44 24 40          	mov    %eax,0x40(%rsp)
+ 86d:	e8 be fd ff ff       	callq  630 <malloc@plt>
+ 872:	48 89 df             	mov    %rbx,%rdi
+ 875:	48 89 84 24 88 00 00 	mov    %rax,0x88(%rsp)
+ 87c:	00 
+ 87d:	e8 ae fd ff ff       	callq  630 <malloc@plt>
+ 882:	48 89 df             	mov    %rbx,%rdi
+ 885:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+ 88a:	e8 a1 fd ff ff       	callq  630 <malloc@plt>
+ 88f:	4c 89 ff             	mov    %r15,%rdi
+ 892:	48 89 c3             	mov    %rax,%rbx
+ 895:	e8 96 fd ff ff       	callq  630 <malloc@plt>
+ 89a:	4c 89 ff             	mov    %r15,%rdi
+ 89d:	49 89 c4             	mov    %rax,%r12
+ 8a0:	e8 8b fd ff ff       	callq  630 <malloc@plt>
+ 8a5:	85 ed                	test   %ebp,%ebp
+ 8a7:	49 89 c7             	mov    %rax,%r15
+ 8aa:	7e 2e                	jle    8da <find_best_split+0xca>
+ 8ac:	8b 44 24 40          	mov    0x40(%rsp),%eax
+ 8b0:	31 f6                	xor    %esi,%esi
+ 8b2:	4c 89 e7             	mov    %r12,%rdi
+ 8b5:	48 8d 68 01          	lea    0x1(%rax),%rbp
+ 8b9:	48 8d 14 ad 00 00 00 	lea    0x0(,%rbp,4),%rdx
+ 8c0:	00 
+ 8c1:	e8 5a fd ff ff       	callq  620 <memset@plt>
+ 8c6:	48 8b 7c 24 10       	mov    0x10(%rsp),%rdi
+ 8cb:	48 8d 14 ed 00 00 00 	lea    0x0(,%rbp,8),%rdx
+ 8d2:	00 
+ 8d3:	31 f6                	xor    %esi,%esi
+ 8d5:	e8 46 fd ff ff       	callq  620 <memset@plt>
+ 8da:	8b 8c 24 d0 00 00 00 	mov    0xd0(%rsp),%ecx
+ 8e1:	85 c9                	test   %ecx,%ecx
+ 8e3:	7e 59                	jle    93e <find_best_split+0x12e>
+ 8e5:	8b 84 24 d0 00 00 00 	mov    0xd0(%rsp),%eax
+ 8ec:	48 8b 7c 24 10       	mov    0x10(%rsp),%rdi
+ 8f1:	31 d2                	xor    %edx,%edx
+ 8f3:	4c 8b 44 24 50       	mov    0x50(%rsp),%r8
+ 8f8:	4c 8b 4c 24 58       	mov    0x58(%rsp),%r9
+ 8fd:	44 8b 54 24 40       	mov    0x40(%rsp),%r10d
+ 902:	8d 70 ff             	lea    -0x1(%rax),%esi
+ 905:	48 83 c6 01          	add    $0x1,%rsi
+ 909:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ 910:	49 63 04 91          	movslq (%r9,%rdx,4),%rax
+ 914:	41 8b 44 85 00       	mov    0x0(%r13,%rax,4),%eax
+ 919:	44 29 d0             	sub    %r10d,%eax
+ 91c:	48 98                	cltq   
+ 91e:	48 8d 0c c7          	lea    (%rdi,%rax,8),%rcx
+ 922:	41 83 04 84 01       	addl   $0x1,(%r12,%rax,4)
+ 927:	f2 0f 10 01          	movsd  (%rcx),%xmm0
+ 92b:	f2 41 0f 58 04 d0    	addsd  (%r8,%rdx,8),%xmm0
+ 931:	48 83 c2 01          	add    $0x1,%rdx
+ 935:	48 39 d6             	cmp    %rdx,%rsi
+ 938:	f2 0f 11 01          	movsd  %xmm0,(%rcx)
+ 93c:	75 d2                	jne    910 <find_best_split+0x100>
+ 93e:	45 85 f6             	test   %r14d,%r14d
+ 941:	0f 8e 22 02 00 00    	jle    b69 <find_best_split+0x359>
+ 947:	8b 84 24 d0 00 00 00 	mov    0xd0(%rsp),%eax
+ 94e:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+ 953:	66 0f ef e4          	pxor   %xmm4,%xmm4
+ 957:	4c 89 64 24 18       	mov    %r12,0x18(%rsp)
+ 95c:	c7 44 24 60 ff ff ff 	movl   $0xffffffff,0x60(%rsp)
+ 963:	ff 
+ 964:	4d 89 fc             	mov    %r15,%r12
+ 967:	4c 89 6c 24 28       	mov    %r13,0x28(%rsp)
+ 96c:	83 e8 01             	sub    $0x1,%eax
+ 96f:	48 89 7c 24 38       	mov    %rdi,0x38(%rsp)
+ 974:	89 44 24 64          	mov    %eax,0x64(%rsp)
+ 978:	41 8d 46 ff          	lea    -0x1(%r14),%eax
+ 97c:	f2 0f 11 64 24 48    	movsd  %xmm4,0x48(%rsp)
+ 982:	f2 0f 11 64 24 30    	movsd  %xmm4,0x30(%rsp)
+ 988:	48 8d 44 87 04       	lea    0x4(%rdi,%rax,4),%rax
+ 98d:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
+ 992:	8b 44 24 40          	mov    0x40(%rsp),%eax
+ 996:	48 83 c0 01          	add    $0x1,%rax
+ 99a:	48 8d 3c 85 00 00 00 	lea    0x0(,%rax,4),%rdi
+ 9a1:	00 
+ 9a2:	48 c1 e0 03          	shl    $0x3,%rax
+ 9a6:	48 89 44 24 78       	mov    %rax,0x78(%rsp)
+ 9ab:	8b 84 24 d0 00 00 00 	mov    0xd0(%rsp),%eax
+ 9b2:	48 89 bc 24 80 00 00 	mov    %rdi,0x80(%rsp)
+ 9b9:	00 
+ 9ba:	83 e8 02             	sub    $0x2,%eax
+ 9bd:	48 83 c0 01          	add    $0x1,%rax
+ 9c1:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
+ 9c6:	48 8b 44 24 38       	mov    0x38(%rsp),%rax
+ 9cb:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 9d0:	8b 54 24 08          	mov    0x8(%rsp),%edx
+ 9d4:	8b 00                	mov    (%rax),%eax
+ 9d6:	85 d2                	test   %edx,%edx
+ 9d8:	89 44 24 44          	mov    %eax,0x44(%rsp)
+ 9dc:	7e 21                	jle    9ff <find_best_split+0x1ef>
+ 9de:	48 8b 94 24 80 00 00 	mov    0x80(%rsp),%rdx
+ 9e5:	00 
+ 9e6:	31 f6                	xor    %esi,%esi
+ 9e8:	4c 89 e7             	mov    %r12,%rdi
+ 9eb:	e8 30 fc ff ff       	callq  620 <memset@plt>
+ 9f0:	48 8b 54 24 78       	mov    0x78(%rsp),%rdx
+ 9f5:	31 f6                	xor    %esi,%esi
+ 9f7:	48 89 df             	mov    %rbx,%rdi
+ 9fa:	e8 21 fc ff ff       	callq  620 <memset@plt>
+ 9ff:	8b 44 24 64          	mov    0x64(%rsp),%eax
+ a03:	85 c0                	test   %eax,%eax
+ a05:	0f 8e df 00 00 00    	jle    aea <find_best_split+0x2da>
+ a0b:	8b 44 24 44          	mov    0x44(%rsp),%eax
+ a0f:	48 8b 7c 24 70       	mov    0x70(%rsp),%rdi
+ a14:	45 31 f6             	xor    %r14d,%r14d
+ a17:	0f af 84 24 d0 00 00 	imul   0xd0(%rsp),%eax
+ a1e:	00 
+ a1f:	48 8b 74 24 58       	mov    0x58(%rsp),%rsi
+ a24:	48 98                	cltq   
+ a26:	48 8d 2c c5 00 00 00 	lea    0x0(,%rax,8),%rbp
+ a2d:	00 
+ a2e:	4c 8d 2c 86          	lea    (%rsi,%rax,4),%r13
+ a32:	4c 8d 3c 2f          	lea    (%rdi,%rbp,1),%r15
+ a36:	48 03 6c 24 50       	add    0x50(%rsp),%rbp
+ a3b:	4c 89 e8             	mov    %r13,%rax
+ a3e:	4d 89 e5             	mov    %r12,%r13
+ a41:	49 89 dc             	mov    %rbx,%r12
+ a44:	4c 89 fb             	mov    %r15,%rbx
+ a47:	4d 89 f7             	mov    %r14,%r15
+ a4a:	49 89 c6             	mov    %rax,%r14
+ a4d:	0f 1f 00             	nopl   (%rax)
+ a50:	4b 63 14 be          	movslq (%r14,%r15,4),%rdx
+ a54:	48 8b 44 24 28       	mov    0x28(%rsp),%rax
+ a59:	4c 89 ee             	mov    %r13,%rsi
+ a5c:	44 8b 44 24 08       	mov    0x8(%rsp),%r8d
+ a61:	4c 89 e7             	mov    %r12,%rdi
+ a64:	8b 14 90             	mov    (%rax,%rdx,4),%edx
+ a67:	2b 54 24 40          	sub    0x40(%rsp),%edx
+ a6b:	48 63 d2             	movslq %edx,%rdx
+ a6e:	49 8d 0c d4          	lea    (%r12,%rdx,8),%rcx
+ a72:	41 83 44 95 00 01    	addl   $0x1,0x0(%r13,%rdx,4)
+ a78:	48 8b 54 24 10       	mov    0x10(%rsp),%rdx
+ a7d:	f2 0f 10 01          	movsd  (%rcx),%xmm0
+ a81:	f2 42 0f 58 44 fd 00 	addsd  0x0(%rbp,%r15,8),%xmm0
+ a88:	f2 0f 11 01          	movsd  %xmm0,(%rcx)
+ a8c:	48 8b 4c 24 18       	mov    0x18(%rsp),%rcx
+ a91:	e8 aa fb ff ff       	callq  640 <evaluate_antiloss@plt>
+ a96:	f2 0f 10 13          	movsd  (%rbx),%xmm2
+ a9a:	66 0f 28 ca          	movapd %xmm2,%xmm1
+ a9e:	f2 0f 5c 4b 08       	subsd  0x8(%rbx),%xmm1
+ aa3:	66 0f 54 0d f5 00 00 	andpd  0xf5(%rip),%xmm1        # ba0 <_fini+0x20>
+ aaa:	00 
+ aab:	66 0f 2f 0d e5 00 00 	comisd 0xe5(%rip),%xmm1        # b98 <_fini+0x18>
+ ab2:	00 
+ ab3:	76 1c                	jbe    ad1 <find_best_split+0x2c1>
+ ab5:	66 0f 2f 44 24 30    	comisd 0x30(%rsp),%xmm0
+ abb:	76 14                	jbe    ad1 <find_best_split+0x2c1>
+ abd:	8b 44 24 44          	mov    0x44(%rsp),%eax
+ ac1:	f2 0f 11 54 24 48    	movsd  %xmm2,0x48(%rsp)
+ ac7:	f2 0f 11 44 24 30    	movsd  %xmm0,0x30(%rsp)
+ acd:	89 44 24 60          	mov    %eax,0x60(%rsp)
+ ad1:	49 83 c7 01          	add    $0x1,%r15
+ ad5:	48 83 c3 08          	add    $0x8,%rbx
+ ad9:	4c 39 7c 24 20       	cmp    %r15,0x20(%rsp)
+ ade:	0f 85 6c ff ff ff    	jne    a50 <find_best_split+0x240>
+ ae4:	4c 89 e3             	mov    %r12,%rbx
+ ae7:	4d 89 ec             	mov    %r13,%r12
+ aea:	48 83 44 24 38 04    	addq   $0x4,0x38(%rsp)
+ af0:	48 8b 44 24 38       	mov    0x38(%rsp),%rax
+ af5:	48 39 44 24 68       	cmp    %rax,0x68(%rsp)
+ afa:	0f 85 d0 fe ff ff    	jne    9d0 <find_best_split+0x1c0>
+ b00:	4d 89 e7             	mov    %r12,%r15
+ b03:	66 0f ef c0          	pxor   %xmm0,%xmm0
+ b07:	4c 8b 64 24 18       	mov    0x18(%rsp),%r12
+ b0c:	f2 0f 2a 44 24 60    	cvtsi2sdl 0x60(%rsp),%xmm0
+ b12:	48 8b 7c 24 10       	mov    0x10(%rsp),%rdi
+ b17:	f2 0f 11 44 24 08    	movsd  %xmm0,0x8(%rsp)
+ b1d:	e8 ee fa ff ff       	callq  610 <free@plt>
+ b22:	48 89 df             	mov    %rbx,%rdi
+ b25:	e8 e6 fa ff ff       	callq  610 <free@plt>
+ b2a:	4c 89 e7             	mov    %r12,%rdi
+ b2d:	e8 de fa ff ff       	callq  610 <free@plt>
+ b32:	4c 89 ff             	mov    %r15,%rdi
+ b35:	e8 d6 fa ff ff       	callq  610 <free@plt>
+ b3a:	48 8b 84 24 88 00 00 	mov    0x88(%rsp),%rax
+ b41:	00 
+ b42:	f2 0f 10 44 24 08    	movsd  0x8(%rsp),%xmm0
+ b48:	f2 0f 10 6c 24 48    	movsd  0x48(%rsp),%xmm5
+ b4e:	f2 0f 11 00          	movsd  %xmm0,(%rax)
+ b52:	f2 0f 11 68 08       	movsd  %xmm5,0x8(%rax)
+ b57:	48 81 c4 98 00 00 00 	add    $0x98,%rsp
+ b5e:	5b                   	pop    %rbx
+ b5f:	5d                   	pop    %rbp
+ b60:	41 5c                	pop    %r12
+ b62:	41 5d                	pop    %r13
+ b64:	41 5e                	pop    %r14
+ b66:	41 5f                	pop    %r15
+ b68:	c3                   	retq   
+ b69:	66 0f ef f6          	pxor   %xmm6,%xmm6
+ b6d:	f2 0f 10 05 1b 00 00 	movsd  0x1b(%rip),%xmm0        # b90 <_fini+0x10>
+ b74:	00 
+ b75:	f2 0f 11 74 24 48    	movsd  %xmm6,0x48(%rsp)
+ b7b:	eb 95                	jmp    b12 <find_best_split+0x302>

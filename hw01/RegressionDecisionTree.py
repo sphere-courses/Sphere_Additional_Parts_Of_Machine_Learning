@@ -2,7 +2,7 @@ import numpy as np
 
 
 class _Node:
-    def __init__(self, node_idx, eps=1e-3):
+    def __init__(self, node_idx, eps=1e-4):
         self.node_idx = node_idx
         self.eps = eps
         self.is_leaf = False
@@ -56,10 +56,8 @@ class _Node:
         garbage_fea = np.where(np.abs(np.max(x, axis=0) - np.min(x, axis=0)) < self.eps)[0]
         if garbage_fea.shape[0] > 0:
             mse[:, garbage_fea] = np.nan
-        # exclude (n, 0) slice
-        mse[-1] = np.nan
         # exclude incorrect border slices
-        mse[x_sliced_sorted == np.roll(x_sliced_sorted, shift=-1, axis=0)] = np.nan
+        mse[np.isclose(x_sliced_sorted, np.roll(x_sliced_sorted, shift=-1, axis=0))] = np.nan
 
         try:
             n_best_obj, self.n_best_fea = np.unravel_index(np.nanargmin(mse), mse.shape)

@@ -2,6 +2,8 @@ import numpy as np
 
 from RegressionDecisionTree import RegressionDecisionTree
 
+from RegressionObliviousTree import RegressionObliviousTree
+
 
 class StochasticGradientBoosting:
     def __init__(self,
@@ -28,11 +30,11 @@ class StochasticGradientBoosting:
         mse_train = []
         mse_test = []
 
-        self.estimators.append(RegressionDecisionTree(fea_subsample=self.fea_subsample,
-                                                      max_depth=0,
-                                                      min_samples_split=self.min_samples_split,
-                                                      min_samples_leaf=self.min_samples_leaf
-                                                      ).fit(x, y)
+        self.estimators.append(RegressionObliviousTree(fea_subsample=self.fea_subsample,
+                                                       max_depth=0,
+                                                       min_samples_split=self.min_samples_split,
+                                                       min_samples_leaf=self.min_samples_leaf
+                                                       ).fit(x, y)
                                )
 
         predictions_base = self.estimators[-1].predict(x)
@@ -47,16 +49,19 @@ class StochasticGradientBoosting:
             indices = np.random.choice(x.shape[0], int(x.shape[0] * self.subsample), replace=False)
             gradients = 2.0 * (y[indices] - predictions_base[indices])
 
-            self.estimators.append(RegressionDecisionTree(fea_subsample=self.fea_subsample,
-                                                          max_depth=self.max_depth,
-                                                          min_samples_split=self.min_samples_split,
-                                                          min_samples_leaf=self.min_samples_leaf
-                                                          ).fit(x[indices], gradients)
+            #print("x: \n", np.sort(x[:,[11, 3, 2]], axis=0))
+
+            self.estimators.append(RegressionObliviousTree(fea_subsample=self.fea_subsample,
+                                                           max_depth=self.max_depth,
+                                                           min_samples_split=self.min_samples_split,
+                                                           min_samples_leaf=self.min_samples_leaf
+                                                           ).fit(x[indices], gradients)
                                    )
 
             prediction_i = self.estimators[-1].predict(x)
             betta = (prediction_i[indices] * (y[indices] - predictions_base[indices])).sum() / ((prediction_i[indices]**2).sum())
             self.estimators[-1].update_leafs(self.learning_rate, betta)
+            self.estimators[-1].scale_leafs()
             predictions_base += self.estimators[-1].predict(x)
 
             if x_test is not None:
