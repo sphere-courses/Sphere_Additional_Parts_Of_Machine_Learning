@@ -94,9 +94,16 @@ class RegressionObliviousTree:
             self._build_tree(x[right_obj], y[right_obj], 2 * node_idx + 2, depth + 1)
         return
 
-    def scale_leafs(self):
+    def scale_leafs(self, type=None, k=1000.):
         # Regularize tree using leafs scaling
-        leafs_scales = self.n_obj_train / (1. + self.n_obj_train + np.sqrt(self.n_obj_train))
+        if type is None:
+            leafs_scales = 1.
+        elif type == 'sqrt':
+            leafs_scales = np.sqrt(self.n_obj_train / (self.n_obj_train + k))
+        elif type == 'log':
+            leafs_scales = np.log(1. + self.n_obj_train / (self.n_obj_train + k))
+        elif type == 'no_k':
+            leafs_scales = self.n_obj_train / (1. + self.n_obj_train + np.sqrt(self.n_obj_train))
         self.update_leafs(1., leafs_scales)
 
     def predict(self, x):

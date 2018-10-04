@@ -13,15 +13,15 @@ def parce_sparce(path, shape):
     return x, y
 
 
-def test_sklearn_gbm(model, x_train, Y_train, x_test, Y_test, n_estimators_list):
+def test_sklearn_gbm(model, x_train, y_train, x_test, y_test, n_estimators_list):
     model.n_estimators = 1
     model.warm_start = True
     n_estimators_list = sorted(n_estimators_list)
     errors = []
     for est_num in n_estimators_list:
         model.n_estimators = est_num
-        model.fit(x_train, Y_train)
+        model.fit(x_train, y_train)
         pred = model.predict(x_test)
-        error = mean_squared_error(Y_test, pred)
+        error = mean_squared_error(y_test, pred)
         errors.append(error)
     return model.train_score_, errors

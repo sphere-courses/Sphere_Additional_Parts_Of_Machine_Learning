@@ -9,21 +9,22 @@ from utils import parce_sparce, test_sklearn_gbm
 from StochasticGradientBoosting import StochasticGradientBoosting
 
 
-# x_train, y_train = parce_sparce('Regression dataset/reg.train.txt', (7500, 246))
-# x_test, y_test = parce_sparce('Regression dataset/reg.test.txt', (10050, 246))
-#
-from sklearn.datasets import load_boston
-from sklearn.model_selection import train_test_split
-boston = load_boston()
+x_train, y_train = parce_sparce('Regression dataset/reg.train.txt', (7500, 246))
+x_test, y_test = parce_sparce('Regression dataset/reg.test.txt', (10050, 246))
 
-x = boston['data']
-y = boston['target']
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=10)
+# from sklearn.datasets import load_boston
+# from sklearn.model_selection import train_test_split
+# boston = load_boston()
+#
+# x = boston['data']
+# y = boston['target']
+# x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=10)
 
 np.random.seed(10)
 
+
 model = StochasticGradientBoosting(learning_rate=0.1,
-                                   n_estimators=3000,
+                                   n_estimators=300,
                                    fea_subsample=1.,
                                    max_depth=3,
                                    min_samples_split=2,
@@ -41,18 +42,16 @@ print('Test MSE: ', np.mean((y_test - model.predict(x_test)) ** 2))
 plt.plot(mse_train, label='mse_train')
 plt.plot(mse_test, label='mse_test')
 
-mse_sk_train = []
-mse_sk_test = []
 
 model_sk = GradientBoostingRegressor(learning_rate=0.1,
-                                     n_estimators=3000,
+                                     n_estimators=300,
                                      max_depth=3,
                                      min_samples_split=2,
                                      min_samples_leaf=1,
                                      subsample=1.
                                      )
 
-mse_sk_train, mse_sk_test = test_sklearn_gbm(model_sk, x_train, y_train, x_test, y_test, range(1, 3000))
+mse_sk_train, mse_sk_test = test_sklearn_gbm(model_sk, x_train, y_train, x_test, y_test, range(1, 300))
 
 print(mse_sk_train)
 print(mse_sk_test)

@@ -1,6 +1,6 @@
 import numpy as np
 
-from RegressionDecisionTree import RegressionDecisionTree
+# from RegressionDecisionTree import RegressionDecisionTree
 
 from RegressionObliviousTree import RegressionObliviousTree
 
@@ -49,8 +49,6 @@ class StochasticGradientBoosting:
             indices = np.random.choice(x.shape[0], int(x.shape[0] * self.subsample), replace=False)
             gradients = 2.0 * (y[indices] - predictions_base[indices])
 
-            #print("x: \n", np.sort(x[:,[11, 3, 2]], axis=0))
-
             self.estimators.append(RegressionObliviousTree(fea_subsample=self.fea_subsample,
                                                            max_depth=self.max_depth,
                                                            min_samples_split=self.min_samples_split,
@@ -59,9 +57,10 @@ class StochasticGradientBoosting:
                                    )
 
             prediction_i = self.estimators[-1].predict(x)
-            betta = (prediction_i[indices] * (y[indices] - predictions_base[indices])).sum() / ((prediction_i[indices]**2).sum())
+            betta = ((prediction_i[indices] * (y[indices] - predictions_base[indices])).sum() /
+                     ((prediction_i[indices]**2).sum()))
             self.estimators[-1].update_leafs(self.learning_rate, betta)
-            self.estimators[-1].scale_leafs()
+            self.estimators[-1].scale_leafs(type='no_k')
             predictions_base += self.estimators[-1].predict(x)
 
             if x_test is not None:
