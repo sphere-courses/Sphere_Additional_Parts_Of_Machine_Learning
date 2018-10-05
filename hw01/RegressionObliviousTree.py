@@ -1,6 +1,6 @@
 import numpy as np
 
-from find_best_split_oblivious import find_best_split
+from find_best_split_oblivious import find_best_split, find_best_split_python
 
 
 class RegressionObliviousTree:
@@ -41,6 +41,11 @@ class RegressionObliviousTree:
                                                    used_fea,
                                                    depth
                                                    )
+            # split_fea, split_thr = find_best_split_python(x_sliced_sorted, y_sliced_sorted,
+            #                                               idx_sliced_sorted, node_idx,
+            #                                               used_fea,
+            #                                               depth
+            #                                               )
 
             if split_fea == -1:
                 break

@@ -3,6 +3,19 @@
 #include <stdint.h>
 #include <math.h>
 
+//double evaluate_antiloss(
+//	double * S_p, int32_t * n_p,
+//	double * S_n_1, int32_t * n_n_1,
+//	int32_t n_node
+//)
+//{
+//	double antiloss = 0.;
+//	for (int32_t j = 0; j < n_node; ++j) {
+//		antiloss += (n_p[j] ? S_p[j] * S_p[j] / n_p[j] : 0.) + ((n_n_1[j] - n_p[j]) ? (S_n_1[j] - S_p[j]) * (S_n_1[j] - S_p[j]) / (n_n_1[j] - n_p[j]) : 0.);
+//	}
+//	return antiloss;
+//}
+
 double evaluate_antiloss(
 	double * restrict _S_p, int32_t * restrict _n_p,
 	double * restrict _S_n_1, int32_t * restrict _n_n_1,
