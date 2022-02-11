@@ -59,6 +59,8 @@ class StochasticGradientBoosting:
             prediction_i = self.estimators[-1].predict(x)
             betta = ((prediction_i[indices] * (y[indices] - predictions_base[indices])).sum() /
                      ((prediction_i[indices]**2).sum()))
+            # TODO: check if there is some bug
+            # self.estimators[-1].update_leafs(self.learning_rate, 0.5)
             self.estimators[-1].update_leafs(self.learning_rate, betta)
             self.estimators[-1].scale_leafs(type='no_k')
             predictions_base += self.estimators[-1].predict(x)

@@ -3,24 +3,29 @@
 #include <stdint.h>
 #include <math.h>
 
-//double evaluate_antiloss(
-//	double * S_p, int32_t * n_p,
-//	double * S_n_1, int32_t * n_n_1,
-//	int32_t n_node
-//)
-//{
-//	double antiloss = 0.;
-//	for (int32_t j = 0; j < n_node; ++j) {
-//		antiloss += (n_p[j] ? S_p[j] * S_p[j] / n_p[j] : 0.) + ((n_n_1[j] - n_p[j]) ? (S_n_1[j] - S_p[j]) * (S_n_1[j] - S_p[j]) / (n_n_1[j] - n_p[j]) : 0.);
-//	}
-//	return antiloss;
-//}
+#define SPEEDUP
+
+#if !defined(SPEEDUP)
+
+double evaluate_antiloss(
+	double * S_p, int32_t * n_p,
+	double * S_n_1, int32_t * n_n_1,
+	int32_t n_node
+)
+{
+	double antiloss = 0.;
+	for (int32_t j = 0; j < n_node; ++j) {
+		antiloss += (n_p[j] ? S_p[j] * S_p[j] / n_p[j] : 0.) + ((n_n_1[j] - n_p[j]) ? (S_n_1[j] - S_p[j]) * (S_n_1[j] - S_p[j]) / (n_n_1[j] - n_p[j]) : 0.);
+	}
+	return antiloss;
+}
+#else
 
 double evaluate_antiloss(
 	double * restrict _S_p, int32_t * restrict _n_p,
 	double * restrict _S_n_1, int32_t * restrict _n_n_1,
 	int32_t n_node
-) 
+)
 {
 	double *S_p = __builtin_assume_aligned(_S_p, 64);
 	int *n_p = __builtin_assume_aligned(_n_p, 32);
@@ -33,6 +38,8 @@ double evaluate_antiloss(
 	}
 	return antiloss;
 }
+
+#endif // SPEEDUP
 
 // x_*, y_*, idx_*, node_* must be feature-along-horizon c-style arrays
 double* find_best_split(
@@ -59,11 +66,11 @@ double* find_best_split(
 	for (int32_t p = 0; p < n_node; ++p) {
 		S_n_1[p] = n_n_1[p] = 0;
 	}
-	
+
 	// compute S_n_1, n_n_1
 	for (int32_t i = 0; i < n_obj; ++i) {
 		S_n_1[node_idx[idx_sliced_sorted[i]] - node_bias] += y_sliced_sorted[i];
-		n_n_1[node_idx[idx_sliced_sorted[i]] - node_bias] += 1; 
+		n_n_1[node_idx[idx_sliced_sorted[i]] - node_bias] += 1;
 	}
 
 	int32_t best_fea = -1;

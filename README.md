@@ -1,1 +1,1 @@
-# Sphere_Additional_Parts_Of_Machine_Learning
+# Материалы по курсу "Дополнительные главы машинного обучения". Осень 2018
